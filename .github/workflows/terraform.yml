@@ -22,7 +22,8 @@ jobs:
         pr_draft: false                                    # Creates pull request as draft
         pr_allow_empty: true    
         github_token: ${{ secrets.PULL_REQUEST_TOKEN }}
-        
+
+jobs:
   terraform_plan:
     env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
