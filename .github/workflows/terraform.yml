@@ -3,6 +3,17 @@ name: Terraform Plan
 on: [push]
 
 jobs:
+  pull_request:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: ""                                 # If blank, default: triggered branch
+        destination_branch: "master"                      # If blank, default: master
+        pr_allow_empty: true                              # Creates pull request even if there are no changes
+        github_token: ${{ secrets.PULL_REQUEST_TOKEN }}
   terraform_plan:
     env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
