@@ -1,4 +1,4 @@
-name: Terraform Plan
+name: Automated Pull Requests
 
 on: [push]
 
@@ -23,6 +23,10 @@ jobs:
         pr_allow_empty: true    
         github_token: ${{ secrets.PULL_REQUEST_TOKEN }}
         
+name: Terraform Plan
+
+on: [pull_request]
+jobs:        
   terraform_plan:
     env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
