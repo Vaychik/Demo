@@ -8,19 +8,29 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: pull-request
-      uses: repo-sync/pull-request@v2
-      with:
-        source_branch: ""                                 # If blank, default: triggered branch
-        destination_branch: "master"                      # If blank, default: master
-        pr_allow_empty: true                              # Creates pull request even if there are no changes
-        github_token: ${{ secrets.PULL_REQUEST_TOKEN }}
+      id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PULL_REQUEST_TOKEN }}
+          commit-message: Pull Request
+          signoff: false
+          branch: example-patches
+          title: '[Example] Update report'
+          labels: |
+            automated pr
+          milestone: 1
+          draft: false
+
+      - name: Check output
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
   terraform_plan:
     env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Install Terraform
       env:
