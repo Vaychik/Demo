@@ -4,7 +4,7 @@ on: [pull_request]
 
 defaults:
   run:
-    working-directory: ./terraform/common/
+    working-directory: ./terraform/commonnn/
 
 jobs:
   terraform_plan:
