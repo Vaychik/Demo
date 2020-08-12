@@ -2,9 +2,9 @@ name: Terraform Plan
 
 on: [pull_request]
       
-defaults:
-  run:
-    working-directory: ./terraform/common/
+#defaults:
+  #run:
+    #working-directory: ./terraform/common/
 
 jobs:
   terraform_plan:
@@ -28,11 +28,32 @@ jobs:
     - name: Verify Terraform version
       run: terraform --version
 
-    - name: Terraform init
+    - name: Terraform init Common
+      if: github.event_path == 'terraform/common/**'
+      working-directory: ./terraform/common/
       run: terraform init -input=false
 
-    - name: Terraform Format
+    - name: Terraform init Bootstrap
+      if: github.event_path == 'terraform/basic_configuration/**'
+      working-directory: ./terraform/common/
+      run: terraform init -input=false
+      
+    - name: Terraform Format Common
+      if: github.event_path == 'terraform/common/**'
+      working-directory: ./terraform/common/
       run: terraform fmt -check
 
-    - name: Terraform Plan
+    - name: Terraform Format Bootstrap
+      if: github.event_path == 'terraform/basic_configuration/**'
+      working-directory: ./terraform/basic_configuration/
+      run: terraform fmt -check
+
+    - name: Terraform Plan Common
+      if: github.event_path == 'terraform/common/**'
+      working-directory: ./terraform/common/
+      run: terraform plan
+
+    - name: Terraform Plan Bootstrap
+      if: github.event_path == 'terraform/basic_configuration/**'
+      working-directory: ./terraform/basic_configuration/
       run: terraform plan
