@@ -1,9 +1,8 @@
 name: Terraform Plan
 
 on:
-  push:
-     branches-ignore: [master]
-     paths-ignore: ['.github/workflows/*']
+  pull_request:
+     paths: ['terraform/**']
       
 defaults:
   run:
