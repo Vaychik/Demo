@@ -12,7 +12,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     runs-on: ubuntu-latest
-    if: github.event == 'pull_request' && github.event_path == 'terraform/**'
+    if: github.event == 'pull_request'
     steps:
     - uses: actions/checkout@v2
 
