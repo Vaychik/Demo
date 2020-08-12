@@ -1,8 +1,8 @@
 name: Terraform Plan
 
 on:
-  push:
-    paths-ignore: 
+  pull_request:
+    paths: 
       - '/terraform/**'    
   
 defaults:
