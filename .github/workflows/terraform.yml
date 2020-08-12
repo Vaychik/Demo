@@ -1,7 +1,10 @@
 name: Terraform Plan
 
-on: [pull_request]    
-  
+on:
+  push:
+     branches-ignore: [master]
+     paths-ignore: ['.github/workflows/*']
+      
 defaults:
   run:
     working-directory: ./terraform/common/
