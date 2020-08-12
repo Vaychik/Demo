@@ -1,12 +1,7 @@
 name: Terraform Plan
 
-on:
-  pull_request:
-    branches-ignore:
-      - master
-    paths:
-      - './terraform/**'
-
+on: [pull_request]
+  
 defaults:
   run:
     working-directory: ./terraform/common/
