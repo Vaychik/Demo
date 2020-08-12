@@ -1,6 +1,9 @@
 name: Terraform Plan
 
-on: [pull_request]
+on:
+  push:
+    paths-ignore: 
+      - '/terraform/**'    
   
 defaults:
   run:
