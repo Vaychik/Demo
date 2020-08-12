@@ -5,7 +5,7 @@ on:
     branches-ignore:
       - master
     paths:
-      - './terraform/**'
+      - 'terraform/*'
 
 defaults:
   run:
