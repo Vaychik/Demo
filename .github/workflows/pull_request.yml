@@ -21,4 +21,4 @@ jobs:
         #pr_milestone: "Milestone 1"                       # Milestone name
         pr_draft: false                                    # Creates pull request as draft
         pr_allow_empty: true    
-        github_token: ${{ secrets.PULL_REQUEST_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
