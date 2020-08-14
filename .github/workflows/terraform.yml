@@ -2,7 +2,7 @@ name: Terraform Plan
 
 on:
   pull_request:
-    paths: ['terraform/**']
+    paths: ['terraform/**', 'terraform/*']
       
 defaults:
   run:
