@@ -1,0 +1,52 @@
+{
+  "description": "Kibana Image",
+  "builders": [
+    {
+      "name": "aws",
+      "type": "amazon-ebs",
+
+      "ami_name": "kibana7-{{isotime | clean_resource_name}}",
+      "availability_zone": "{{user `aws_az`}}",
+      "iam_instance_profile": "packer",
+      "instance_type": "t2.medium",
+      "region": "{{user `aws_region`}}",
+      "run_tags": {
+        "role": "packer"
+      },
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "elasticsearch7-*",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "self"
+        ],
+        "most_recent": true
+      },
+      "ssh_timeout": "10m",
+      "ssh_username": "ubuntu",
+      "tags": {
+        "ImageType": "kibana7-packer-image"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "install-kibana7.sh",
+      "environment_vars": [ "ES_VERSION={{user `elasticsearch_version`}}" ],
+      "execute_command": "echo '' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    },
+    {
+      "type": "file",
+      "source": "kibana_test.py",
+      "destination": "/tmp/kibana_test.py"
+    },
+    {
+      "type": "shell",
+      "script": "kibana_test.py",
+      "execute_command": "pytest -v /tmp/kibana_test.py"
+    }
+  ]
+}
