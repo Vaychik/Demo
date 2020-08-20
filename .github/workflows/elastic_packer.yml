@@ -1,7 +1,7 @@
 name: Run packer build on a template file
 
 on:
-  push:
+  pull_request:
     paths:
       - 'packer/*'
 jobs:
