@@ -3,7 +3,7 @@ name: Run packer build on a template file
 on:
   pull_request:
     paths:
-      - 'packer/*'
+      - 'packer/**'
 jobs:
   packer_build:
     runs-on: ubuntu-latest
