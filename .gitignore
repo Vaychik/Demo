@@ -1,9 +1,16 @@
 # Local .terraform directories
 **/.terraform/*
+.terraform/
+.idea/
+*.pem
+*.backup
 
 # .tfstate files
 *.tfstate
 *.tfstate.*
+terraform.tfvars
 
 # Crash log files
 crash.log
+
+cluster_bootstrap_state
