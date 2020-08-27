@@ -44,14 +44,19 @@
       "execute_command": "echo '' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
     },
     {
+      "type": "shell",
+      "script": "install-cerebro.sh",
+      "execute_command": "echo '' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    },
+    {
       "type": "file",
-      "source": "kibana_test.py",
-      "destination": "/tmp/kibana_test.py"
+      "source": "kibana-test.py",
+      "destination": "/tmp/kibana-test.py"
     },
     {
       "type": "shell",
-      "script": "kibana_test.py",
-      "execute_command": "pytest -v /tmp/kibana_test.py"
+      "script": "kibana-test.py",
+      "execute_command": "pytest -v /tmp/kibana-test.py"
     }
   ]
 }

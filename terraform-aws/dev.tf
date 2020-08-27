@@ -9,8 +9,7 @@ data "template_file" "dev-s3" {
 resource "aws_s3_bucket" "dev" {
   count = var.DEV_MODE_scripts_s3_bucket == "" ? 0 : 1
 
-  bucket = "${var.DEV_MODE_scripts_s3_bucket}"
-  region = var.aws_region
+  bucket = var.DEV_MODE_scripts_s3_bucket
   acl    = "private"
 }
 
