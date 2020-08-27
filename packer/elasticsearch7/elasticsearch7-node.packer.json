@@ -74,13 +74,13 @@
     },
     {
       "type": "file",
-      "source": "elastic_test.py",
-      "destination": "/tmp/elastic_test.py"
+      "source": "elastic-test.py",
+      "destination": "/tmp/elastic-test.py"
     },
     {
       "type": "shell",
-      "script": "elastic_test.py",
-      "execute_command": "pytest -v /tmp/elastic_test.py"
+      "script": "elastic-test.py",
+      "execute_command": "pytest -v /tmp/elastic-test.py"
     }
   ]
 }

@@ -3,20 +3,9 @@
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 function fetch_master_nodes_ips() {
-    if [ "${cloud_provider}" == "aws" ]; then
-        local master_instance_ids="$(aws ec2 describe-instances --region=${aws_region} --filters Name=instance-state-name,Values=running Name=tag:Role,Values=master Name=tag:Cluster,Values=${es_environment} | jq -r '.Reservations | map(.Instances[].InstanceId) | .[]' | sort)"
-        echo "$(aws ec2 describe-instances --region ${aws_region} --instance-ids $master_instance_ids | jq -r '.Reservations[].Instances[].PrivateIpAddress' | sort)"
-    fi
-
-    if [ "${cloud_provider}" == "gcp" ]; then
-        echo "$(gcloud compute instances list --filter 'tags.items=es-master-node AND tags.items=${es_cluster}' --format 'get(networkInterfaces[0].networkIP)' | sort)"
-    fi
+    local master_instance_ids="$(aws ec2 describe-instances --region=${aws_region} --filters Name=instance-state-name,Values=running Name=tag:Role,Values=master Name=tag:Cluster,Values=${es_environment} | jq -r '.Reservations | map(.Instances[].InstanceId) | .[]' | sort)"
+    echo "$(aws ec2 describe-instances --region ${aws_region} --instance-ids $master_instance_ids | jq -r '.Reservations[].Instances[].PrivateIpAddress' | sort)"
 }
-
-if [ "${cloud_provider}" == "azure" ] || [ "${cloud_provider}" == "gcp" ]; then
-    # Change node name to AWS-like hostname
-    sudo sed -i -e "s/node.name: .*$/node.name: ip-$(hostname -I | tr . -)/ig" /etc/elasticsearch/elasticsearch.yml
-fi
 
 if [ "${bootstrap_node}" == "true"  ]; then
     while true
@@ -96,38 +85,6 @@ discovery:
 EOF
 fi
 
-if [ "${cloud_provider}" == "gcp" ]; then
-cat <<'EOF' >>/etc/elasticsearch/elasticsearch.yml
-
-network.host: _gce_,localhost
-plugin.mandatory: discovery-gce
-cloud.gce.project_id: ${gcp_project_id}
-cloud.gce.zone: ${gcp_zone}
-discovery.seed_providers: gce
-EOF
-fi
-
-# Azure doesn't have a proper discovery plugin, hence we are going old-school and relying on scaleset name prefixes
-if [ "${cloud_provider}" == "azure" ]; then
-        cat <<'EOF' >>/etc/elasticsearch/elasticsearch.yml
-network.host: _site_,localhost
-
-# For discovery we are using predictable hostnames (thanks for the computer name prefix), but could just as well use the
-# predictable subnet addresses starting at 10.1.0.5.
-EOF
-
-    # avoiding discovery noise in single-node scenario
-    if [ "${master}" == "true"  ] && [ "${data}" == "true" ]; then
-        cat <<'EOF' >>/etc/elasticsearch/elasticsearch.yml
-discovery.seed_hosts: ["${es_cluster}-master000000", "${es_cluster}-data000000"]
-EOF
-    else
-        cat <<'EOF' >>/etc/elasticsearch/elasticsearch.yml
-discovery.seed_hosts: ["${es_cluster}-master000000", "${es_cluster}-master000001", "${es_cluster}-master000002", "${es_cluster}-data000000", "${es_cluster}-data000001"]
-EOF
-    fi
-fi
-
 cat <<'EOF' >>/etc/security/limits.conf
 
 # allow user 'elasticsearch' mlockall
@@ -199,10 +156,6 @@ if [ "${bootstrap_node}" == "true"  ]; then
         shutdown -h now
     fi
 
-    if [ "${cloud_provider}" == "gcp" ]; then
-        INSTANCE_NAME="$(gcloud compute instances list --filter 'tags.items=es-bootstrap-node AND tags.items=${es_cluster}' --format 'get(name)')"
-        gcloud compute instances delete $INSTANCE_NAME --zone ${gcp_zone} --quiet
-    fi
 else
     # Setup x-pack security also on Kibana configs where applicable
     if [ -f "/etc/kibana/kibana.yml" ]; then
